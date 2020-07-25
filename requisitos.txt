@@ -1,0 +1,8 @@
+
+
+
+
+-Cadastrar Funcionario
+-Excluir Funcionario
+-Atualizar Informações de Funcionario
+-Exibir Lista de Funcionario
