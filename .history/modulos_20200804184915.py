@@ -91,7 +91,6 @@ class AlterarDados():
     
     def __alterar_dados(self, cpf):
         # Aqui quero usar o método __mostar_dados que é chamado pelo método mostra da classe Mostrar Dados
-        # return dados
         pass
 
 
