@@ -80,7 +80,7 @@ class MostraDados(object):
     def cpf(self, cpf):
         self.__cpf = self.__mostar_dados(cpf)
 
-class AlterarDados(MostraDados):
+class AlterarDados():
 
     def __init__(self, cpf):
         self.__cpf = cpf
@@ -90,8 +90,9 @@ class AlterarDados(MostraDados):
         return dados
     
     def __alterar_dados(self, cpf):
-
-        return cpf
+        mostrar = MostraDados(cpf)
+        dados = mostrar.mostra()
+        return dados
 
 
     
