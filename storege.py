@@ -1,5 +1,6 @@
 import sqlite3
 
+#Inicia e cria a tabela no banco de dados
 
 class ManagerDataBase(object):
 
@@ -17,6 +18,7 @@ class ManagerDataBase(object):
                 cpf                 INTEGE NOT NULL PRIMARY KEY,
                 nome                TEXT NOT NULL,
                 endereco            TEXT NOT NULL, 
+                cargo               TEXT NOT NULL,
                 salario             DECIMAL(10,5) NOT NULL,
                 data_admicao        DATE NOT NULL,
                 senha               TEXT NOT NULL
@@ -29,5 +31,8 @@ class ManagerDataBase(object):
         return self.__conn
         
 
-
-            
+try:
+    create = ManagerDataBase()
+    create.create_database()            
+except sqlite3.OperationalError:
+    pass

@@ -1,3 +1,4 @@
+import bcrypt
 
 class Funcionario(object):
 
@@ -5,9 +6,10 @@ class Funcionario(object):
         self.__nome = nome
         self.__endereco = endereco
         self.__cpf = cpf
+        self.__cargo = cargo
         self.__salario = salario
         self.__data_admicao = data_admicao
-        self.__senha = senha
+        self.__senha = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt(14))
 
     
     @property
@@ -23,6 +25,10 @@ class Funcionario(object):
     @property
     def getCpf(self):
         return self.__cpf
+    
+    @property
+    def getCargo(self):
+        return self.__cargo
 
     
     @property
@@ -37,4 +43,3 @@ class Funcionario(object):
     def getSenha(self):
         return self.__senha
 
-funcionario = Funcionario('Gustavo','Rua','88', 'chefe', 1500.00, '10/10/2020', '154')

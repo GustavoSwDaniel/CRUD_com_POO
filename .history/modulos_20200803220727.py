@@ -90,7 +90,7 @@ class AlterarDados(MostraDados):
         return dados
     
     def __alterar_dados(self, cpf):
-
+        super().mostra(cpf)
         return cpf
 
 
