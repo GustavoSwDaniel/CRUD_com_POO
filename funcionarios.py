@@ -2,13 +2,14 @@ import bcrypt
 
 class Funcionario(object):
 
-    def __init__(self, nome, endereco, cpf, cargo, salario, data_admicao, senha):
+    def __init__(self, nome, endereco, cpf, cargo, salario, data_admicao, data_nacimento, senha):
         self.__nome = nome
         self.__endereco = endereco
         self.__cpf = cpf
         self.__cargo = cargo
         self.__salario = salario
         self.__data_admicao = data_admicao
+        self.__data_nacimento = data_nacimento
         self.__senha = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt(14))
 
     
@@ -38,8 +39,14 @@ class Funcionario(object):
     @property
     def getDataA(self):
         return self.__data_admicao
+    
+    @property
+    def getDataN(self):
+        return self.__data_nacimento
+
 
     @property
     def getSenha(self):
         return self.__senha
 
+    

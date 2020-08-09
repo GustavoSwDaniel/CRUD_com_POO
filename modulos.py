@@ -1,6 +1,8 @@
 import sqlite3
 from funcionarios import Funcionario
 from storege import ManagerDataBase
+from re import sub
+import os
 
 
 class Cadastrar(object):
@@ -21,9 +23,10 @@ class Cadastrar(object):
         connection = conn.cursor()
         try:
             connection.execute(
-            "INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?);",
+            "INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
                                                 (Funcionario.getCpf, Funcionario.getNome, Funcionario.getEnder,
                                                 Funcionario.getCargo,      Funcionario.getSalario, Funcionario.getDataA,
+                                                Funcionario.getDataN,
                                                 Funcionario.getSenha ))
         except sqlite3.ProgrammingError:
             print('Dados faltando todos os dados devem ser informados')
@@ -44,70 +47,117 @@ class Cadastrar(object):
 
 class MostraDados(object):
 
-    def __init__(self, cpf):
+    def __init__(self, cpf=0):
         self.__cpf = cpf
 
-    def mostra(self):
-        dados = self.__mostar_dados(self.__cpf)
-        return dados
 
+    def _ler_todos_funcionarios(self):
+        conn = sqlite3.connect('Database.db')
+        connection = conn.cursor()
+        dados = connection.execute('SELECT * FROM funcionarios')
+        return dados.fetchall()
     
-    def __mostar_dados(self, cpf):
+
+    def mostra_todos_funcionarios(self):
+        lista = self._ler_todos_funcionarios()
+        
+        print("-" * 150)
+        for dado in lista:
+            print('CPF:{} | Nome:{:19s} | Endereço:{:10s} | Cargo:{:16s} | Salario:{:.2f} | Data de admição{:10s} | Data de nacimento: {:10s} '.format(
+                dado[0],dado[1],dado[2], dado[3], dado[4],dado[5],dado[6]))
+
+
+    def mostrar(self):
+        dados = self._mostrar_funcionario(self.__cpf)
+        if dados != None:
+            print('Usuario encontrado')
+            print(f'CPF: {dados[0]}') 
+            print(f'Nome: {dados[1]} ') 
+            print(f'Endereco: {dados[2]}')
+            print(f'Cargo: {dados[3]}') 
+            print(f'Salario: R${dados[4]}')
+            print(f'Data de Nascimento: {dados[5]}')
+
+            return dados
+        return None
+
+    def _mostrar_funcionario(self,cpf):
         conn = sqlite3.connect('Database.db')
         connection = conn.cursor()
         print('conectado')
         connection.execute(f"SELECT * FROM funcionarios WHERE cpf = {cpf}")
-        
+
         c = connection.fetchone()
         print(c)
-
         if c != None:
             dados = []
             for linhas in c:
                 dados.append(linhas)
             return dados
-        else:
-            print('CPF não localizado!')
-            return None
+        return None
+
+
+            
+class AlterarDados(MostraDados):
+
+    def __init__(self, cpf, dados, campo, resul_pesquisa = ''):
+        self.__cpf = cpf
+        self.__dado = dados
+        self.__campo = campo   
+        self.resul_pesquisa = resul_pesquisa
         
-    
+    def alterar(self):
+        dados = self.__alterar_dados(self.resul_pesquisa,self.__cpf, self.__dado, self.__campo)
+        return dados
 
-    @property
-    def cpf(self):
-        return self.__cpf
-    
-    @cpf.setter
-    def cpf(self, cpf):
-        self.__cpf = self.__mostar_dados(cpf)
+    def mostra(self):
+        dados = self._mostrar_funcionario(self.__cpf)
+        return dados
 
-class AlterarDados():
+    
+    def __alterar_dados(self, resul_pesquisa, cpf, dados, campo):
+        print('oi')
+        if resul_pesquisa != None:
+            print('Entrei')
+            print(dados)
+            conn = sqlite3.connect('Database.db')
+            connection = conn.cursor()
+            connection.execute(f"UPDATE funcionarios SET {campo} = ? WHERE cpf = ?",(dados, cpf))
+            conn.commit()
+            conn.close
+            print('Alterarados ')
+            return True
+        print('Não existe cliente  com o id informado')
+        return False
+
+        
+
+class ExcluirDados(MostraDados):
 
     def __init__(self, cpf):
         self.__cpf = cpf
-        
-    def altera(self):
-        dados = self.__alterar_dados(self.__cpf)
-        return dados
-    
-    def __alterar_dados(self, cpf):
-        # Aqui quero usar o método __mostar_dados que é chamado pelo método mostra da classe Mostrar Dados
-        # return dados
-        pass
 
 
-    @property
-    def cpf(self):
-        return self.__cpf
+    def excluir(self):
+        self._excluir_dados(self.__cpf)
 
-    @cpf.setter
-    def cpf(self, cpf):
-        self.__cpf = self.__alterar_dados(cpf)
+    def _excluir_dados(self, cpf):
+        cpf = self._remove_caracteres_especiais(cpf)
+        dados = self._mostrar_funcionario(cpf)
 
-
-    
+        if dados != None:
+            conn = sqlite3.connect('Database.db')
+            connection = conn.cursor()
+            connection.execute("DELETE FROM funcionarios WHERE cpf = ?",(cpf,))
+            conn.commit()
+            conn.close()
+            print('Usuario delete com sucesso')
+        else:
+            print('Funcionario não cadastrado')
 
     
+    def _remove_caracteres_especiais(self,cpf):
+        cpf = sub('[^0-9]', '', cpf)
+        return cpf
+
     
-        
-
-

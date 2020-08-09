@@ -21,6 +21,7 @@ class ManagerDataBase(object):
                 cargo               TEXT NOT NULL,
                 salario             DECIMAL(10,5) NOT NULL,
                 data_admicao        DATE NOT NULL,
+                data_nascimento     DATE NOT NULL,
                 senha               TEXT NOT NULL
         );""")
         print('Successfully creata table')
