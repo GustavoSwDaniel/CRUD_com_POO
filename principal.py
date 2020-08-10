@@ -173,7 +173,5 @@ def validar_cpf(cpf):
     return cpf
 
 
-
-
 if __name__ == "__main__":
     selecao()
